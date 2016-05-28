@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html ng-app="Storm">
+<head>
+    <title>Storm - Bug Tracker</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script type="text/javascript" src="/javascripts/angular.min.js"></script>
+    <script type="text/javascript" src="/javascripts/lib/angular-cookies.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/stylesheets/foundation/css/foundation.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/storm.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,300,400,600' rel='stylesheet' type='text/css'>
+
+</head>
+<body ng-controller="StormController" style="background: url('/images/login_bg.jpg') fixed;">
+
+<div class="container">
+
+    <div class="modal_backdrop" ng-show="LOADING.show"></div>
+    <div class="modal_loading" ng-show="LOADING.show">
+        <div class="row">
+            <div class="small-4 column">
+                <img src="/images/storm.png" class="loading_icon">
+            </div>
+            <div class="small-8 column">
+                <div class="loading_text">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="login_container" ng-hide="LOGIN.signed_in">
+        <div class="homepage_logo_container">
+            <img src="/images/kraika.png" class="homepage_logo">
+            <span class="title">STORM<span class="thin"> By KRAIKA</span></span>
+        </div>
+
+        <div class="login_box">
+            <div class="row">
+                <div class="small-12 column">
+
+                    <span class="right">
+                        <img src="/images/storm.png" class="login_logo">
+                        <h4>Storm</h4>
+                    </span>
+                </div>
+
+                <form name="FormLogin">
+                    <div class="small-12 column">
+                        <input type="text" placeholder="Email Address" required ng-model="LOGIN.username">
+                    </div>
+                    <div class="small-12 column">
+                        <input type="password" placeholder="Password" required ng-model="LOGIN.password">
+                    </div>
+                </form>
+
+                <div class="small-12 column">
+                    <button class="small radius small-12 success btn_login" ng-disabled="FormLogin.$invalid" ng-click="login()">Login</button>
+                </div>
+
+                <div class="small-12 column">
+                    <span class="need_account">Need an account? Get in touch at sales@kraika.io</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div ng-show="LOGIN.signed_in" class="signed_in_container">
+        <header class="row">
+            <div class="small-12 column">
+                <img src="images/storm.png" class="logo">
+
+                <h4>Storm</h4>
+
+
+                <span class="right">
+                    <span class="company">{{company}}</span>
+                    <a href="javascript:void(0);" ng-click="logout()" class="logout">Logout</a>
+                </span>
+            </div>
+        </header>
+
+        <div class="row" ng-show="ACTIVE_SECTION == 'all_bugs'">
+            <div class="small-12 column">
+                <h3>All Issues</h3>
+            </div>
+
+            <div class="small-12 column">
+                <button class="btn tiny" ng-click="show_report_screen()">Report An Issue</button>
+            </div>
+
+            <div class="small-12 column">
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            <select ng-model="q.priority">
+                                <option value=""></option>
+                                <option value="major">Major</option>
+                                <option value="regular">Regular</option>
+                                <option value="minor">Minor</option>
+                                <option value="enhancement">Enhancement</option>
+                            </select>
+                        </th>
+                        <th>
+                            <select ng-model="q.status">
+                                <option value=""></option>
+                                <option value="open">Open</option>
+                                <option value="closed">Closed</option>
+                                <option value="as_expected">As Expected</option>
+                            </select>
+                        </th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>Sl</th>
+                        <th>Bug</th>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                    <tr ng-repeat="(key, bug) in all_bugs | filter:q">
+                        <td>{{key + 1}}</td>
+                        <td><a href="javascript:void(0);" ng-click="get_bug(bug.id)">{{bug.id}}</a></td>
+                        <td>{{bug.name}}</td>
+                        <td>{{bug.priority}}</td>
+                        <td>{{bug.status}}</td>
+                        <td>{{bug.dca | date_pretty}}</td>
+                    </tr>
+
+                    <tr ng-show="all_bugs.length === 0">
+                        <td colspan="6">Looks like you don't have any issues</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="row" ng-show="ACTIVE_SECTION == 'view_bug'">
+            <div class="small-12 column">
+                <div class="row">
+                    <div class="small-6 column">
+                        <h3 ng-hide="current_bug.id">Report Issue</h3>
+                        <h3 ng-if="current_bug.id">Issue: #{{current_bug.id}}</h3>
+                    </div>
+
+                    <div class="small-6 column">
+                        <span class="right">
+                            <button class="btn tiny secondary" ng-click="show_all_bugs()">Close</button>
+                            <button class="btn tiny" ng-disabled="FormBug.$invalid" ng-hide="current_bug.id" ng-click="report_bug()">Report Issue</button>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="small-12 column">
+                <form name="FormBug">
+                    <table class="table">
+                        <tr>
+                            <td>Issue</td>
+                            <td><input type="text" ng-model="current_bug.name" required ng-disabled="current_bug.id"></td>
+                        </tr>
+                        <tr>
+                            <td>Priority</td>
+                            <td>
+                                <select ng-model="current_bug.priority" ng-disabled="current_bug.id">
+                                    <option value="major">Major</option>
+                                    <option value="regular">Regular</option>
+                                    <option value="minor">Minor</option>
+                                    <option value="enhancement">Enhancement</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <tr ng-show="current_bug.id">
+                            <td>Reported On</td>
+                            <td>{{current_bug.dca | date_pretty}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Description</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <textarea class="bug_desc" ng-model="current_bug.desc" required ng-disabled="current_bug.id"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+                <div class="row" ng-if="current_bug.id">
+                    <div class="small-12 column">
+                        <h4>Comments</h4>
+                    </div>
+
+                    <div class="small-12 column">
+                        <textarea ng-model="COMMENT.comment"></textarea>
+                    </div>
+
+                    <div class="small-12 column">
+                        <button class="tiny right" ng-click="add_comment()">Add Comment</button>
+                    </div>
+
+                    <div class="small-12 column comment" ng-repeat="(key, comment) in current_bug.comments">
+                        <div class="comment_message">{{comment.comment}}</div>
+                        <div class="comment_username">{{comment.name}} - {{comment.dca | date_pretty}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+var Storm = angular.module('Storm', ['ipCookie']);
+
+Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($scope, $http, ipCookie) {
+    $scope.LOADING = {show: false};
+    function show_loading() { $scope.LOADING.show = true; }
+    function hide_loading() { $scope.LOADING.show = false; }
+
+    $scope.LOGIN = {
+        signed_in: is_logged_in()
+    };
+
+    $scope.COMMENT = {};
+
+    function show_msg(status, msg) {
+        alert(msg);
+    }
+
+    $scope.show_msg = show_msg;
+
+    function noe(i) { return [undefined, null, ''].indexOf(i) > -1; }
+
+    function is_logged_in() { return !noe(ipCookie('__auth')); }
+
+    $scope.company = '';
+    $scope.username = '';
+    $scope.USER = {};
+
+    var SERVICES = {
+        get_bugs: "/api/bugs/list",
+        get_bug: function (bug_id) { return "/api/bugs/" + bug_id; },
+        report_bug: "/api/bugs/report",
+        add_comment: "/api/bugs/comment",
+        login: "/api/accounts/login",
+        logout: "/api/accounts/logout"
+    };
+
+    $scope.ACTIVE_SECTION = "all_bugs";
+
+    $scope.all_bugs = [];
+    $scope.current_bug = {};
+
+    function init_bug() {
+        $scope.current_bug = {
+            priority: 'regular'
+        };
+    }
+
+    $scope.show_report_screen = function () {
+        init_bug();
+        $scope.ACTIVE_SECTION = 'view_bug';
+    };
+
+    $scope.show_all_bugs = function () {
+        $scope.ACTIVE_SECTION = 'all_bugs';
+    };
+
+    function get_bugs() {
+
+        show_loading();
+
+        $http({
+            method: 'GET',
+            url: SERVICES.get_bugs
+        }).success(function(data) {
+            hide_loading();
+            if (data.status !== 'success') {
+                $scope.show_msg('error', data.data);
+                return false;
+            }
+
+            $scope.all_bugs = data.data;
+        }).error(function(data) {
+            hide_loading();
+            $scope.show_msg('error', data.data);
+        });
+    }
+
+    $scope.get_bug = function (bug_id) {
+
+        show_loading();
+
+        $http({
+            method: 'GET',
+            url: SERVICES.get_bug(bug_id)
+        }).success(function(data) {
+            hide_loading();
+            if (data.status !== 'success') {
+                $scope.show_msg('error', data.data);
+                return false;
+            }
+
+            $scope.current_bug = data.data;
+
+            $scope.ACTIVE_SECTION = 'view_bug';
+
+        }).error(function(data) {
+            hide_loading();
+            $scope.show_msg('error', data.data);
+        });
+    };
+
+    $scope.login = function () {
+        show_loading();
+
+        $http({
+            method: 'POST',
+            url: SERVICES.login,
+            data: {
+                username: $scope.LOGIN.username,
+                password: $scope.LOGIN.password
+            }
+        }).success(function(data) {
+            hide_loading();
+            if (!data.auth) {
+                show_msg('error', 'Invalid Username or Password');
+                return;
+            }
+
+            $scope.company = data.company;
+            $scope.username = data.username;
+            $scope.USER = data;
+
+            $scope.LOGIN.signed_in = true;
+
+            show_all_agents();
+        }).error(function(data) {
+            hide_loading();
+            $scope.show_msg('error', data.data);
+        });
+    };
+
+    $scope.logout = function () {
+        show_loading();
+
+        $http({
+            method: 'GET',
+            url: SERVICES.logout
+        }).success(function(data) {
+            hide_loading();
+            if (data.status !== 'success') {
+                $scope.show_msg('error', data.data);
+                return false;
+            }
+
+            $scope.LOGIN.signed_in = false;
+        }).error(function(data) {
+            hide_loading();
+            $scope.show_msg('error', data.data);
+        });
+    };
+
+    $scope.report_bug = function () {
+        show_loading();
+
+        $http({
+            method: 'POST',
+            url: SERVICES.report_bug,
+            data: $scope.current_bug
+        }).success(function(data) {
+            hide_loading();
+            if (data.status !== 'success') {
+                $scope.show_msg('error', data.data);
+                return false;
+            }
+
+            $scope.get_bug(data.data.id);
+
+        }).error(function(data) {
+            hide_loading();
+            $scope.show_msg('error', data.data);
+        });
+    };
+
+    $scope.add_comment = function () {
+        show_loading();
+
+        $http({
+            method: 'POST',
+            url: SERVICES.add_comment,
+            data: {
+              "id": $scope.current_bug.id,
+              "comment": $scope.COMMENT.comment
+            }
+        }).success(function(data) {
+            hide_loading();
+            if (data.status !== 'success') {
+                $scope.show_msg('error', data.data);
+                return false;
+            }
+
+            $scope.COMMENT.comment = undefined;
+            $scope.get_bug($scope.current_bug.id);
+        }).error(function(data) {
+            hide_loading();
+            $scope.show_msg('error', data.data);
+        });
+    };
+
+    if (is_logged_in()) {
+        get_bugs();
+    }
+
+    init_bug();
+
+
+}]);
+
+Storm.filter('date_pretty', function() {
+    return function(orig_date) {
+        try {
+            return orig_date.split('T')[0].split('-').reverse().join('-');
+        } catch(e) {
+            return orig_date;
+        }
+    };
+});
+
+</script>
+
+<style type="text/css">
+.table {
+    width: 100%;
+}
+
+.bug_desc {
+    height: 250px;
+}
+
+.homepage_logo_container .homepage_logo {
+  width: 30px;
+  position: absolute;
+  top: 20px;
+  left: 20px; }
+.homepage_logo_container .title {
+  color: #fff;
+  font-size: 20px;
+  position: absolute;
+  left: 60px;
+  top: 20px;
+  font-weight: 300; }
+  .homepage_logo_container .title .thin {
+    font-weight: 300;
+    font-size: 13px;
+    margin-left: 5px; }
+
+.login_container {
+  background: url("/images/login_bg.jpg");
+  background-size: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center; }
+  .login_container h4 {
+    display: inline-block;
+    float: right;
+    margin-top: 20px;
+    margin-left: 15px; }
+  .login_container .login_box {
+    width: 400px;
+    height: 270px;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    opacity: 0.95;
+    padding: 0 10px; }
+  .login_container .login_logo {
+    width: 40px;
+    margin-top: 20px;
+    margin-bottom: 11px; }
+  .login_container .login_logo_container img {
+    float: left; }
+  .login_container .login_logo_container h4 {
+    float: left; }
+  .login_container .btn_login {
+    margin-bottom: 5px; }
+  .login_container .need_account {
+    font-size: 11px;
+    color: #888; }
+
+header {
+  padding-top: 10px;
+  padding-bottom: 30px;
+}
+  header .logo {
+    width: 40px;
+    float: left; }
+  header h4 {
+    display: inline-block;
+    margin-left: 20px;
+    float: left; }
+  header .company {
+    margin-right: 10px; }
+
+.main_content {
+  margin-top: 20px; }
+  .main_content .table {
+    width: 100%; }
+
+.modal_backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: #000;
+  opacity: 0.65; }
+
+.modal_loading {
+  position: fixed;
+  z-index: 1000;
+  width: 300px;
+  height: 150px;
+  background: #fff;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto; }
+  .modal_loading .loading_icon {
+    margin-top: 45px;
+    margin-left: 20px;
+    opacity: 0.8; }
+  .modal_loading .loading_text {
+    margin-top: 55px;
+    margin-left: 20px;
+    font-size: 30px;
+    font-weight: 300;
+    color: #666; }
+
+.logout {
+  font-size: 13px; }
+
+.comment {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #fafafa;
+    border: solid 1px #ccc
+}
+
+.comment_message {
+    margin-bottom: 10px;
+}
+
+.comment_username {
+    color: #aaa;
+}
+
+.signed_in_container h4, .signed_in_container h3 {
+    color: #fff;
+}
+</style>
+
+</body>
+</html>
