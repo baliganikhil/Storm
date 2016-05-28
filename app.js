@@ -38,7 +38,9 @@ if ('development' == app.get('env')) {
 
 mongoose.connect('mongodb://localhost:27017/storm');
 
-app.get('/users', user.list);
+app.get('/', function (req, res) {
+  res.redirect('/storm.html');
+});
 
 app.post('/api/accounts/register', AccountAPI.register);
 app.post('/api/accounts/login', AccountAPI.login);
