@@ -1,3 +1,178 @@
 body {
-  font: 14px "Open Sans", Helvetica, Arial, sans-serif;
+    font: 14px "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+.table {
+    width: 100%;
+}
+
+.bug_desc {
+    height: 250px;
+}
+
+.homepage_logo_container .homepage_logo {
+    width: 30px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.homepage_logo_container .title {
+    color: #fff;
+    font-size: 20px;
+    position: absolute;
+    left: 60px;
+    top: 20px;
+    font-weight: 300;
+}
+
+.homepage_logo_container .title .thin {
+    font-weight: 300;
+    font-size: 13px;
+    margin-left: 5px;
+}
+
+.login_container {
+    background: url("/images/login_bg.jpg");
+    background-size: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    text-align: center;
+}
+
+.login_container h4 {
+    display: inline-block;
+    float: right;
+    margin-top: 20px;
+    margin-left: 15px;
+}
+
+.login_container .login_box {
+    width: 400px;
+    height: 270px;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    opacity: 0.95;
+    padding: 0 10px;
+}
+
+.login_container .login_logo {
+    width: 40px;
+    margin-top: 20px;
+    margin-bottom: 11px;
+}
+
+.login_container .login_logo_container img {
+    float: left;
+}
+
+.login_container .login_logo_container h4 {
+    float: left;
+}
+
+.login_container .btn_login {
+    margin-bottom: 5px;
+}
+
+.login_container .need_account {
+    font-size: 11px;
+    color: #888;
+}
+
+header {
+    padding-top: 10px;
+    padding-bottom: 30px;
+}
+
+header .logo {
+    width: 40px;
+    float: left;
+}
+
+header h4 {
+    display: inline-block;
+    margin-left: 20px;
+    float: left;
+}
+
+header .company {
+    margin-right: 10px;
+}
+
+.main_content {
+    margin-top: 20px;
+}
+
+.main_content .table {
+    width: 100%;
+}
+
+.modal_backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    background: #000;
+    opacity: 0.65;
+}
+
+.modal_loading {
+    position: fixed;
+    z-index: 1000;
+    width: 300px;
+    height: 150px;
+    background: #fff;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.modal_loading .loading_icon {
+    margin-top: 45px;
+    margin-left: 20px;
+    opacity: 0.8;
+}
+
+.modal_loading .loading_text {
+    margin-top: 55px;
+    margin-left: 20px;
+    font-size: 30px;
+    font-weight: 300;
+    color: #666;
+}
+
+.logout {
+    font-size: 13px;
+}
+
+.comment {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #fafafa;
+    border: solid 1px #ccc
+}
+
+.comment_message {
+    margin-bottom: 10px;
+}
+
+.comment_username {
+    color: #aaa;
+}
+
+.signed_in_container h4,
+.signed_in_container h3 {
+    color: #fff;
 }
