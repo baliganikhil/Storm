@@ -88,7 +88,7 @@ exports.add_comment = function (req, res) {
 
         bug_doc.comments.push(comment_doc);
 
-        Bug.update({id: bug_id, company: company}, bug_doc, function (err) {
+        Bug.update({id: bug_id}, bug_doc, function (err) {
             if (err) {
                 res.status(500);
                 res.send({status: 'error', data: err});
