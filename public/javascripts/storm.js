@@ -122,7 +122,7 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
 
             $scope.LOGIN.signed_in = true;
 
-            show_all_agents();
+            get_bugs();
         }).error(function(data) {
             hide_loading();
             $scope.show_msg('error', data.data);

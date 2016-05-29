@@ -25,9 +25,15 @@ exports.create_bug = function (req, res) {
 };
 
 exports.get_bugs = function (req, res) {
-    var company = req.user.company;
+    var company = req.user.company,
+        is_admin = req.user.is_admin,
+        query = {};
 
-    Bug.find({company: company}, {_id: 0, company : 0, __v: 0}).sort({dua: -1}).limit(100).exec(function (err, bug_docs) {
+    query = {company: company};
+
+    if (is_admin) { delete query.company; }
+
+    Bug.find(query, {_id: 0, company : 0, __v: 0}).sort({dua: -1}).limit(100).exec(function (err, bug_docs) {
         if (err) {
             res.status(500);
             res.send({status: 'error', data: err});
@@ -84,9 +90,15 @@ exports.add_comment = function (req, res) {
 
 exports.get_bug = function (req, res) {
     var bug_id = req.params.bug_id,
-        company = req.user.company;
+        company = req.user.company,
+        is_admin = req.user.is_admin,
+        query = {};
 
-    Bug.findOne({id: bug_id, company: company}, function (err, bug_doc) {
+    query = {id: bug_id, company: company};
+
+    if (is_admin) { delete query.company; }
+
+    Bug.findOne(query, function (err, bug_doc) {
         if (err) {
             res.status(500);
             res.send({status: 'error', data: err});

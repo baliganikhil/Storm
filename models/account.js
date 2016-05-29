@@ -8,7 +8,7 @@ var User = new mongoose.Schema(
             phone: {type: String, default: ""},
             hash: String,
 
-            primary: {type: Boolean, default: false},
+            is_admin: {type: Boolean, default: false},
 //            referrer: {type: String},
 
             notif_sms: {type: Boolean, default: true},
