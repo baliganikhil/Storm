@@ -56,9 +56,15 @@ exports.add_comment = function (req, res) {
         company = req.user.company,
         username = req.user.username,
         name = req.user.name,
-        comment = req.body.comment;
+        is_admin = req.user.is_admin,
+        comment = req.body.comment,
+        query = {id: bug_id, company: company};
 
-    Bug.findOne({id: bug_id, company: company}, function (err, bug_doc) {
+    if (is_admin) {
+        delete query.company;
+    }
+
+    Bug.findOne(query, function (err, bug_doc) {
         if (err) {
             res.status(500);
             res.send({status: 'error', data: err});
