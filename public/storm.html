@@ -125,6 +125,7 @@
                             <th>Priority</th>
                             <th>Status</th>
                             <th>Date</th>
+                            <th ng-if="is_admin">Company</th>
                         </tr>
                         <tr ng-repeat="(key, bug) in all_bugs | filter:q">
                             <td>{{key + 1}}</td>
@@ -133,10 +134,12 @@
                             <td>{{bug.priority}}</td>
                             <td>{{bug.status}}</td>
                             <td>{{bug.dca | date_pretty}}</td>
+                            <td ng-if="is_admin">{{bug.company}}</td>
                         </tr>
 
                         <tr ng-show="all_bugs.length === 0">
                             <td colspan="6">Looks like you don't have any issues</td>
+                            <td ng-if="is_admin"></td>
                         </tr>
                     </table>
                 </div>

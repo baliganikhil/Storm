@@ -27,13 +27,20 @@ exports.create_bug = function (req, res) {
 exports.get_bugs = function (req, res) {
     var company = req.user.company,
         is_admin = req.user.is_admin,
-        query = {};
+        query = {},
+        fields = {};
 
     query = {company: company};
+    fields = {_id: 0, __v: 0, company: 0, comments: 0};
 
-    if (is_admin) { delete query.company; }
+    if (is_admin) {
+        delete fields.company;
+        delete query.company;
+    }
 
-    Bug.find(query, {_id: 0, company : 0, __v: 0}).sort({dua: -1}).limit(100).exec(function (err, bug_docs) {
+    console.log(JSON.stringify(fields));
+
+    Bug.find(query, fields).sort({dua: -1}).limit(100).exec(function (err, bug_docs) {
         if (err) {
             res.status(500);
             res.send({status: 'error', data: err});

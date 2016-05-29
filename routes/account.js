@@ -48,6 +48,7 @@ function login(username, password, callback) {
         name: 1,
         username: 1,
         phone: 1,
+        is_admin: 1,
         company:1
 
     }, function (err, doc) {
@@ -69,6 +70,7 @@ function login(username, password, callback) {
                     __auth: doc.hash,
                     name: doc.name,
                     username: doc.username,
+                    is_admin: doc.is_admin,
                     phone: doc.phone,
                     company: doc.company
                 });
@@ -103,7 +105,7 @@ function register(data, callback) {
             name: data.name,
             phone: data.phone,
             company: data.company,
-            primary: data.primary
+            is_admin: data.is_admin
         };
 
         (new User(doc)).save(function (err, doc) {
@@ -172,11 +174,12 @@ exports.signedin = function (req, res) {
     });
 };
 
-function set_auth_cookie(res, __auth, username, name, company) {
+function set_auth_cookie(res, __auth, username, name, company, is_admin) {
     res.cookie('__auth', __auth);
     res.cookie('username', username);
     res.cookie('name', name);
     res.cookie('company', company);
+    res.cookie('is_admin', is_admin);
 
     return res;
 }
@@ -200,7 +203,7 @@ exports.login = function (req, res) {
                         res.cookie('username', username);
                         res.cookie('name', response.name);*/
 
-            res = set_auth_cookie(res, response.__auth, response.username, response.name, response.company);
+            res = set_auth_cookie(res, response.__auth, response.username, response.name, response.company, response.is_admin);
         }
 
         res.send(response);
@@ -243,6 +246,7 @@ exports.logout = function (req, res) {
     res.cookie('name', '');
     res.cookie('company', '');
     res.cookie('__auth', '');
+    res.cookie('is_admin', '');
 
     res.send({
         status: 'success'

@@ -9,6 +9,11 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
         signed_in: is_logged_in()
     };
 
+    $scope.company = '';
+    $scope.is_admin = undefined;
+    $scope.username = '';
+    $scope.USER = {};
+
     $scope.COMMENT = {};
 
     function show_msg(status, msg) {
@@ -19,11 +24,11 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
 
     function noe(i) { return [undefined, null, ''].indexOf(i) > -1; }
 
-    function is_logged_in() { return !noe(ipCookie('__auth')); }
-
-    $scope.company = '';
-    $scope.username = '';
-    $scope.USER = {};
+    function is_logged_in() {
+        $scope.company = ipCookie('company');
+        $scope.is_admin = ipCookie('is_admin');
+        return !noe(ipCookie('__auth'));
+    }
 
     var SERVICES = {
         get_bugs: "/api/bugs/list",
@@ -118,6 +123,7 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
 
             $scope.company = data.company;
             $scope.username = data.username;
+            $scope.is_admin = data.is_admin;
             $scope.USER = data;
 
             $scope.LOGIN.signed_in = true;
