@@ -85,12 +85,42 @@
             </header>
 
             <div class="row" ng-show="ACTIVE_SECTION == 'all_bugs'">
-                <div class="small-12 column">
+                <div class="small-6 column">
                     <h3>All Issues</h3>
                 </div>
 
-                <div class="small-12 column">
-                    <button class="btn tiny" ng-click="show_report_screen()">Report An Issue</button>
+                <div class="small-6 column">
+                    <button class="btn tiny right" ng-click="show_report_screen()">Report An Issue</button>
+                </div>
+
+                <div class="small-6 medium-2 column count_box">
+                    <div class="count">{{status_counts.open}}</div>
+                    <div class="status">Open</div>
+                </div>
+
+                <div class="small-6 medium-2 column count_box">
+                    <div class="count">{{status_counts.as_expected}}</div>
+                    <div class="status">As Expected</div>
+                </div>
+
+                <div class="small-6 medium-2 column count_box">
+                    <div class="count">{{status_counts.closed}}</div>
+                    <div class="status">Closed</div>
+                </div>
+
+                <div class="small-6 medium-2 column count_box">
+                    <div class="count">{{status_counts.regular}}</div>
+                    <div class="status">Regular</div>
+                </div>
+
+                <div class="small-6 medium-2 column count_box">
+                    <div class="count">{{status_counts.major}}</div>
+                    <div class="status">Major</div>
+                </div>
+
+                <div class="small-6 medium-2 column count_box">
+                    <div class="count">{{status_counts.enhancement}}</div>
+                    <div class="status">Enhancement</div>
                 </div>
 
                 <div class="small-12 column">

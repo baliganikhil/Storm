@@ -177,3 +177,19 @@ header .company {
 .signed_in_container h3 {
     color: #fff;
 }
+
+.count_box {
+    margin-bottom: 20px;
+}
+
+.count_box .count {
+    font-size: 3em;
+    text-align: center;
+    font-weight: 300;
+    color: #fff;
+}
+
+.count_box .status {
+    color: #fff;
+    text-align: center;
+}

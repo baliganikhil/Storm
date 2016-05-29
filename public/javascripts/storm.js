@@ -16,6 +16,12 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
 
     $scope.COMMENT = {};
 
+    $scope.status_counts = {
+        open: 0,
+        as_expected: 0,
+        closed: 0
+    };
+
     function show_msg(status, msg) {
         alert(msg);
     }
@@ -75,9 +81,26 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
             }
 
             $scope.all_bugs = data.data;
+            update_status_counts();
         }).error(function(data) {
             hide_loading();
             $scope.show_msg('error', data.data);
+        });
+    }
+
+    function update_status_counts() {
+        $scope.status_counts = {
+            open: 0,
+            as_expected: 0,
+            closed: 0,
+            regular: 0,
+            major: 0,
+            enhancement: 0
+        };
+
+        $scope.all_bugs.forEach(function (bug) {
+            $scope.status_counts[bug.status] ++;
+            $scope.status_counts[bug.priority] ++;
         });
     }
 
@@ -219,6 +242,8 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
                 $scope.show_msg('error', data.data);
                 return false;
             }
+
+            $scope.get_bug($scope.current_bug.id);
         }).error(function(data) {
             hide_loading();
             $scope.show_msg('error', data.data);
