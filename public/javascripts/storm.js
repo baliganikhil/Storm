@@ -36,7 +36,8 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
         report_bug: "/api/bugs/report",
         add_comment: "/api/bugs/comment",
         login: "/api/accounts/login",
-        logout: "/api/accounts/logout"
+        logout: "/api/accounts/logout",
+        change_status: "/api/bugs/status"
     };
 
     $scope.ACTIVE_SECTION = "all_bugs";
@@ -200,6 +201,36 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
             hide_loading();
             $scope.show_msg('error', data.data);
         });
+    };
+
+    function change_status(status) {
+        show_loading();
+
+        $http({
+            method: 'POST',
+            url: SERVICES.change_status,
+            data: {
+                "id": $scope.current_bug.id,
+                "status": status
+            }
+        }).success(function(data) {
+            hide_loading();
+            if (data.status !== 'success') {
+                $scope.show_msg('error', data.data);
+                return false;
+            }
+        }).error(function(data) {
+            hide_loading();
+            $scope.show_msg('error', data.data);
+        });
+    }
+
+    $scope.mark_resolved = function () {
+        change_status('closed');
+    };
+
+    $scope.mark_as_expected = function () {
+        change_status('as_expected');
     };
 
     if (is_logged_in()) {

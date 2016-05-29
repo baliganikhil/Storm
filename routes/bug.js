@@ -121,3 +121,49 @@ exports.get_bug = function (req, res) {
         res.send({status: 'success', data: bug_doc});
     });
 };
+
+exports.change_status = function (req, res) {
+    var bug_id = req.body.id,
+        status = req.body.status,
+        company = req.user.company,
+        username = req.user.username,
+        name = req.user.name,
+        is_admin = req.user.is_admin,
+        query = {id: bug_id};
+
+    if (!is_admin) {
+        res.status(401);
+        res.send({status: 'error', data: 'You are not authorised'});
+        return;
+    }
+
+    Bug.findOne(query, function (err, bug_doc) {
+        if (err) {
+            res.status(500);
+            res.send({status: 'error', data: err});
+            return;
+        }
+
+        if (COMMON.noe(bug_doc)) {
+            res.status(400);
+            res.send({status: 'error', data: 'Could not find that issue'});
+            return;
+        }
+
+
+
+        bug_doc = JSON.parse(JSON.stringify(bug_doc));
+
+        bug_doc.status = status;
+
+        Bug.update({id: bug_id}, bug_doc, function (err) {
+            if (err) {
+                res.status(500);
+                res.send({status: 'error', data: err});
+                return;
+            }
+
+            res.send({status: 'success', data: 'Status updated successfully'});
+        });
+    });
+};

@@ -156,6 +156,9 @@
                         <div class="small-6 column">
                             <span class="right">
                                 <button class="btn tiny secondary" ng-click="show_all_bugs()">Close</button>
+
+                                <button class="btn tiny secondary" ng-show="is_admin && current_bug.id && current_bug.status == 'open'" ng-click="mark_as_expected()">Mark As Expected</button>
+                                <button class="btn tiny success" ng-show="is_admin && current_bug.id && current_bug.status == 'open'" ng-click="mark_resolved()">Mark as Resolved</button>
                                 <button class="btn tiny" ng-disabled="FormBug.$invalid" ng-hide="current_bug.id" ng-click="report_bug()">Report Issue</button>
                             </span>
                         </div>
@@ -185,6 +188,11 @@
                             <tr ng-show="current_bug.id">
                                 <td>Reported On</td>
                                 <td>{{current_bug.dca | date_pretty}}</td>
+                            </tr>
+
+                            <tr>
+                                <td>Status</td>
+                                <td>{{current_bug.status}}</td>
                             </tr>
 
                             <tr>

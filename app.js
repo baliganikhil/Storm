@@ -50,7 +50,7 @@ app.get('/api/bugs/list', authenticate, BugApi.get_bugs);
 app.get('/api/bugs/:bug_id', authenticate, BugApi.get_bug);
 app.post('/api/bugs/report', authenticate, BugApi.create_bug);
 app.post('/api/bugs/comment', authenticate, BugApi.add_comment);
-
+app.post('/api/bugs/status', authenticate, BugApi.change_status);
 
 
 http.createServer(app).listen(app.get('port'), function(){
