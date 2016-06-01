@@ -38,8 +38,6 @@ exports.get_bugs = function (req, res) {
         delete query.company;
     }
 
-    console.log(JSON.stringify(fields));
-
     Bug.find(query, fields).sort({dua: -1}).limit(100).exec(function (err, bug_docs) {
         if (err) {
             res.status(500);
@@ -150,8 +148,6 @@ exports.change_status = function (req, res) {
             return;
         }
 
-
-
         bug_doc = JSON.parse(JSON.stringify(bug_doc));
 
         bug_doc.status = status;
@@ -164,6 +160,50 @@ exports.change_status = function (req, res) {
             }
 
             res.send({status: 'success', data: 'Status updated successfully'});
+        });
+    });
+};
+
+exports.change_priority = function (req, res) {
+    var bug_id = req.body.id,
+        priority = req.body.priority,
+        company = req.user.company,
+        username = req.user.username,
+        is_admin = req.user.is_admin,
+        name = req.user.name,
+        query = {id: bug_id};
+
+    if (!is_admin) {
+        res.status(401);
+        res.send({status: 'error', data: 'You are not authorised'});
+        return;
+    }
+
+    Bug.findOne(query, function (err, bug_doc) {
+        if (err) {
+            res.status(500);
+            res.send({status: 'error', data: err});
+            return;
+        }
+
+        if (COMMON.noe(bug_doc)) {
+            res.status(400);
+            res.send({status: 'error', data: 'Could not find that issue'});
+            return;
+        }
+
+        bug_doc = JSON.parse(JSON.stringify(bug_doc));
+
+        bug_doc.priority = priority;
+
+        Bug.update({id: bug_id}, bug_doc, function (err) {
+            if (err) {
+                res.status(500);
+                res.send({status: 'error', data: err});
+                return;
+            }
+
+            res.send({status: 'success', data: 'Priority updated successfully'});
         });
     });
 };

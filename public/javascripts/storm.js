@@ -22,6 +22,16 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
         closed: 0
     };
 
+    $scope.PRIORITIES = {
+        new_priority: '',
+        priorities: [
+            {code: "major", name: "Major"},
+            {code: "regular", name: "Regular"},
+            {code: "minor", name: "Minor"},
+            {code: "enhancement", name: "Enhancement"}
+        ]
+    };
+
     function show_msg(status, msg) {
         alert(msg);
     }
@@ -43,7 +53,8 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
         add_comment: "/api/bugs/comment",
         login: "/api/accounts/login",
         logout: "/api/accounts/logout",
-        change_status: "/api/bugs/status"
+        change_status: "/api/bugs/status",
+        change_priority: "/api/bugs/priority"
     };
 
     $scope.ACTIVE_SECTION = "all_bugs";
@@ -235,6 +246,31 @@ Storm.controller('StormController', ['$scope', '$http', 'ipCookie', function($sc
             data: {
                 "id": $scope.current_bug.id,
                 "status": status
+            }
+        }).success(function(data) {
+            hide_loading();
+            if (data.status !== 'success') {
+                $scope.show_msg('error', data.data);
+                return false;
+            }
+
+            $scope.get_bug($scope.current_bug.id);
+        }).error(function(data) {
+            hide_loading();
+            $scope.show_msg('error', data.data);
+        });
+
+    }
+
+    $scope.change_priority = function () {
+        show_loading();
+
+        $http({
+            method: 'POST',
+            url: SERVICES.change_priority,
+            data: {
+                "id": $scope.current_bug.id,
+                "priority": $scope.PRIORITIES.new_priority
             }
         }).success(function(data) {
             hide_loading();

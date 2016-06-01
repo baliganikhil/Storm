@@ -206,12 +206,7 @@
                             <tr>
                                 <td>Priority</td>
                                 <td>
-                                    <select ng-model="current_bug.priority" ng-disabled="current_bug.id">
-                                        <option value="major">Major</option>
-                                        <option value="regular">Regular</option>
-                                        <option value="minor">Minor</option>
-                                        <option value="enhancement">Enhancement</option>
-                                    </select>
+                                    <select ng-model="current_bug.priority" ng-disabled="current_bug.id" ng-options="priority.code as priority.name for (key, priority) in PRIORITIES.priorities"></select>
                                 </td>
                             </tr>
 
@@ -223,6 +218,20 @@
                             <tr>
                                 <td>Status</td>
                                 <td>{{current_bug.status}}</td>
+                            </tr>
+
+                            <tr ng-if="is_admin && current_bug.id">
+                                <td>Change Priority</td>
+                                <td>
+                                    <div class="row">
+                                        <div class="small-6 medium-3 column">
+                                            <select ng-model="PRIORITIES.new_priority" ng-options="priority.code as priority.name for (key, priority) in PRIORITIES.priorities"></select>
+                                        </div>
+                                        <div class="small-6 medium-3 column end">
+                                            <button class="tiny secondary" ng-click="change_priority()">Change Priority</button>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
 
                             <tr>
