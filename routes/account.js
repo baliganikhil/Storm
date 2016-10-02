@@ -30,6 +30,8 @@ function authenticate(username, hash, callback) {
         if (authenticated) {
             payload.name = doc.name;
             payload.company = doc.company;
+
+            if (doc.is_admin) { payload.is_admin = doc.is_admin; }
         }
 
         callback(false, payload);
