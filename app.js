@@ -68,7 +68,7 @@ function authenticate(req, res, next) {
           return;
       }
 
-      if (auth_response.username === 'baliganikhil@gmail.com') {
+      if (auth_response.is_admin && auth_response.company === 'Kraika') {
         auth_response.is_admin = true;
       }
 
